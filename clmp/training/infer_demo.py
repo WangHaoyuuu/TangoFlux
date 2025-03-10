@@ -9,7 +9,7 @@ from open_clip import create_model
 from training.data import get_audio_features
 from training.data import int16_to_float32, float32_to_int16
 from transformers import RobertaTokenizer
-
+import torch.nn.functional as F
 tokenize = RobertaTokenizer.from_pretrained("roberta-base")
 
 
@@ -54,6 +54,44 @@ def infer_text():
     text_embed = model.get_text_embedding(text_data)
     print(text_embed.size())
 
+def read_txt_file(file_path):
+    with open(file_path, 'r') as file:
+        content = file.read()
+    return content
+
+def infer_melody(melody_file_path):
+    device = "cuda:0" if torch.cuda.is_available() else "cpu"
+    precision = "fp32"
+    amodel = "HTSAT-base"
+    tmodel = "roberta"
+    enable_fusion = False
+    fusion_type = "aff_2d"
+    pretrained = PRETRAINED_PATH
+    
+    # Load the model
+    model, model_cfg = create_model(
+        amodel,
+        tmodel,
+        pretrained,
+        precision=precision,
+        device=device,
+        enable_fusion=enable_fusion,
+        fusion_type=fusion_type,
+    )
+    
+    # Load melody data from file
+    melody_data = read_txt_file(melody_file_path)
+    
+    # Process melody data through model
+    with torch.no_grad():
+        melody_embed = model.encode_melody(melody_data, device=device)
+        # Apply same transformations as in the forward pass if needed
+        melody_embed = model.melody_mlp_1024_to_768(melody_embed)
+        melody_embed = model.melody_projection(melody_embed)
+        melody_embed = F.normalize(melody_embed, dim=-1)
+    
+    print(f"Melody embedding shape: {melody_embed.size()}")
+    return melody_embed
 
 def infer_audio():
     device = "cuda:0" if torch.cuda.is_available() else "cpu"

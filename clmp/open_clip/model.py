@@ -827,6 +827,13 @@ class CLAP(nn.Module):
         audio_embeds = F.normalize(audio_embeds, dim=-1)
 
         return audio_embeds
+    
+    def get_melody_embedding(self, data):
+        device = next(self.parameters()).device
+        data = data.to(device)
+        melody_embeds = self.encode_melody(data, device=device)
+        return melody_embeds
+
 
     def audio_infer(self, audio, hopsize=None, device=None):
         """Forward one audio and produce the audio embedding
