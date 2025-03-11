@@ -3,7 +3,7 @@ import torch
 from torch import nn as nn
 from torchvision.ops.misc import FrozenBatchNorm2d
 import logging
-import h5py
+# import h5py
 from tqdm import tqdm
 import random
 import json

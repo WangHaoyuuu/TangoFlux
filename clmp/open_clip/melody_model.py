@@ -8,7 +8,7 @@ import warnings
 
 from torch.nn.init import _calculate_fan_in_and_fan_out
 import torch.utils.checkpoint as checkpoint
-import pretty_midi
+# import pretty_midi
 import random
 
 from torchlibrosa.stft import Spectrogram, LogmelFilterBank
@@ -159,7 +159,7 @@ class Melody(nn.Module):
         # print("melody_texts check", melody_texts[0]) # 
         for melody_text in melody_texts:
             # tokens = self.tokenizer(melody_text)['input_ids']
-            tokens = text_to_indexed_segments('/mnt/data/wmz/audioldm_clap_repair/AudioLDM-training-finetuning-main/audioldm_train/modules/clap/songcomposer/only_index/re_index.json', melody_text)
+            tokens = text_to_indexed_segments('/mnt/data/home/wanghaoyu/TangoFlux/clmp/melody_encoder/only_index/re_index.json', melody_text)
             tokens_tensor = torch.tensor(tokens, dtype=torch.long).to(device)            
             token_embeddings = self.melody_embbedding_weight(tokens_tensor)
             token_embeddings = token_embeddings.to(torch.float32) 

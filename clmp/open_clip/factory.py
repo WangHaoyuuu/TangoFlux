@@ -153,7 +153,7 @@ def create_model(
                 
                 print("checkpoint path------", checkpoint_path)
                 ckpt = load_state_dict(checkpoint_path, skip_params=True)
-                model.load_state_dict(ckpt)
+                model.load_state_dict(ckpt, strict=False)
                 param_names = [n for n, p in model.named_parameters()]
                 # for n in param_names:
                 #     print(n, "\t", "Loaded" if n in ckpt else "Unloaded")

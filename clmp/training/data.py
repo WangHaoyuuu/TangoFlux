@@ -27,9 +27,9 @@ import logging
 import math
 import os
 import random
-import h5py
+# import h5py
 from dataclasses import dataclass
-from MMGen_train.modules.clmp.training.params import parse_args
+from training.params import parse_args
 import braceexpand
 import numpy as np
 import pandas as pd
@@ -49,11 +49,11 @@ from pathlib import Path
 import wget
 from contextlib import suppress
 
-from MMGen_train.modules.clmp.open_clip.utils import (
+from clmp.open_clip.utils import (
     get_tar_path_from_dataset_name,
     dataset_split,
 )
-from MMGen_train.modules.clmp.open_clip.utils import load_p, load_class_label
+from clmp.open_clip.utils import load_p, load_class_label
 import tempfile
 import copy
 
@@ -67,7 +67,7 @@ try:
 except ImportError:
     torchaudio = None
 
-from MMGen_train.modules.clmp.open_clip import tokenize
+from clmp.open_clip import tokenize
 
 
 def tokenizer(text):
@@ -76,7 +76,7 @@ def tokenizer(text):
 
 from transformers import RobertaTokenizer
 
-tokenize = RobertaTokenizer.from_pretrained("/mnt/data/wmz/audioldm_clap_repair/AudioLDM-training-finetuning-main/data/checkpoints/roberta-base")
+tokenize = RobertaTokenizer.from_pretrained("FacebookAI/roberta-base")
 
 def tokenizer(text):
     result = tokenize(

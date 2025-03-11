@@ -531,7 +531,7 @@ class CLAP(nn.Module):
                 nn.Linear(self.joint_embed_shape, self.joint_embed_shape),
             )
         elif text_cfg.model_type == "roberta":
-            self.text_branch = RobertaModel.from_pretrained("roberta-base")
+            self.text_branch = RobertaModel.from_pretrained("FacebookAI/roberta-base")
             self.text_transform = MLPLayers(
                 units=[
                     self.joint_embed_shape,
@@ -739,7 +739,8 @@ class CLAP(nn.Module):
         
         # Check if melody data exists and process it
         if 'melody_text' in audio:
-            melody_features = self.encode_melody(audio["melody_text"], device=device) # [2 ,1024]
+            
+            melody_features = self.encode_melody(audio["melody_text"], device=device)
             melody_features = self.melody_mlp_1024_to_768(melody_features)
             melody_features = self.melody_projection(melody_features)
             melody_features = F.normalize(melody_features, dim=-1)
@@ -830,9 +831,14 @@ class CLAP(nn.Module):
     
     def get_melody_embedding(self, data):
         device = next(self.parameters()).device
-        data = data.to(device)
-        melody_embeds = self.encode_melody(data, device=device)
-        return melody_embeds
+        # 如果输入是单个字符串，将其包装为列表
+        if isinstance(data, str):
+            data = [data]
+        melody_features = self.encode_melody(data, device=device)
+        melody_features = self.melody_mlp_1024_to_768(melody_features)
+        melody_features = self.melody_projection(melody_features)
+        melody_features = F.normalize(melody_features, dim=-1)
+        return melody_features
 
 
     def audio_infer(self, audio, hopsize=None, device=None):
