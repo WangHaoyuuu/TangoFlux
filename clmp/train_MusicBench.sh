@@ -28,3 +28,5 @@ CUDA_VISIBLE_DEVICES=0 python -m training.main \
     --data-filling "repeatpad" \
     --data-truncating "rand_trunc" \
     --resume '/mnt/data/logs/new_clap_debug/debug1_3dclap_3d_train/checkpoints/epoch_top_0.pt'
+
+    # test git
