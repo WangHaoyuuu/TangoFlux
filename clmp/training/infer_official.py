@@ -117,7 +117,6 @@ def infer_audio_embedding(model, audio_file_path):
     # 添加峰值归一化
     audio_waveform = pyln.normalize.peak(audio_waveform, -1.0)  # 与 CLAP 对齐
     audio_waveform = int16_to_float32(float32_to_int16(audio_waveform))
-    audio_waveform = int16_to_float32(float32_to_int16(audio_waveform))
     audio_waveform = torch.from_numpy(audio_waveform).float()
 
     # 2. 处理音频特征
@@ -135,7 +134,7 @@ def infer_audio_embedding(model, audio_file_path):
             # 添加批次维度
             audio_dict["waveform"] = audio_dict["waveform"].unsqueeze(0)
         audio_dict["waveform"] = audio_dict["waveform"].to(DEVICE)
-    
+    # ["waveform"] 是音频的时域特征
     model.eval()
     with torch.no_grad():
         audio_embed = model.get_audio_embedding(audio_dict)
